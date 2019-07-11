@@ -1,0 +1,182 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.example.com:
+  peer0.manufacturerorg.example.com:
+  peer1.manufacturerorg.example.com:
+  peer0.retailorg.example.com:
+  peer1.retailorg.example.com:
+  peer0.distributororg.example.com:
+  peer1.distributororg.example.com:  
+  peer0.shiporg.example.com:
+  peer1.shiporg.example.com:
+
+networks:
+  byfn:
+
+services:
+
+  ca.example.com:
+    extends:
+      file: base/docker-compose-base.yaml
+      service: ca.example.com
+    container_name: ca.example.com
+    networks:
+      - byfn
+
+  orderer.example.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.example.com
+    container_name: orderer.example.com
+    networks:
+      - byfn
+
+  peer0.manufacturerorg.example.com:
+    container_name: peer0.manufacturerorg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.manufacturerorg.example.com
+    networks:
+      - byfn
+
+  peer1.manufacturerorg.example.com:
+    container_name: peer1.manufacturerorg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.manufacturerorg.example.com
+    networks:
+      - byfn
+
+  peer0.retailorg.example.com:
+    container_name: peer0.retailorg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.retailorg.example.com
+    networks:
+      - byfn
+
+  peer1.retailorg.example.com:
+    container_name: peer1.retailorg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.retailorg.example.com
+    networks:
+      - byfn
+
+  peer0.distributororg.example.com:
+    container_name: peer0.distributororg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.distributororg.example.com
+    networks:
+      - byfn
+
+  peer1.distributororg.example.com:
+    container_name: peer1.distributororg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.distributororg.example.com
+    networks:
+      - byfn
+
+  peer0.shiporg.example.com:
+    container_name: peer0.shiporg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.shiporg.example.com
+    networks:
+      - byfn
+
+  peer1.shiporg.example.com:
+    container_name: peer1.shiporg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.shiporg.example.com
+    networks:
+      - byfn
+
+  # couchdb:
+  #   container_name: couchdb
+  #   image: hyperledger/fabric-couchdb
+  #   # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+  #   # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+  #   environment:
+  #     - COUCHDB_USER=
+  #     - COUCHDB_PASSWORD=
+  #   ports:
+  #     - 5984:5984
+  #   networks:
+  #     - byfn
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.manufacturerorg.example.com:7051
+      - CORE_PEER_LOCALMSPID=ManufacturerOrgMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manufacturerorg.example.com/peers/peer0.manufacturerorg.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manufacturerorg.example.com/peers/peer0.manufacturerorg.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manufacturerorg.example.com/peers/peer0.manufacturerorg.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manufacturerorg.example.com/users/Admin@manufacturerorg.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.example.com
+      - peer0.manufacturerorg.example.com
+      - peer1.manufacturerorg.example.com
+      - peer0.retailorg.example.com
+      - peer1.retailorg.example.com
+      - peer0.distributororg.example.com
+      - peer1.distributororg.example.com  
+      - peer0.shiporg.example.com
+      - peer1.shiporg.example.com
+    networks:
+      - byfn
+
+  zookeeper.example.com:
+    container_name: zookeeper.example.com
+    image: hyperledger/fabric-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+    - byfn
+
+  kafka.example.com:
+    container_name: kafka.example.com
+    image: hyperledger/fabric-kafka:latest
+    depends_on:
+    - zookeeper.example.com
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper.example.com:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka.example.com:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_MESSAGE_MAX_BYTES=1048576 # 1 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=1048576 # 1 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_LOG_RETENTION_MS=-1
+      - KAFKA_MIN_INSYNC_REPLICAS=1
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
+    networks:
+    - byfn

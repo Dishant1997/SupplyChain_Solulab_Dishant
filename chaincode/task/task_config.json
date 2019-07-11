@@ -1,0 +1,19 @@
+[
+    {
+      "name": "supplyChain1",
+      "policy": "OR('ManufacturerOrgMSP.member', 'RetailOrgMSP.member', 'DistributorOrgMSP.member', 'ShipOrgMSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 3,
+      "blockToLive":1000000,
+      "memberOnlyRead": true
+   },
+    {
+      "name": "supplyChain2",
+      "policy": "OR('ManufacturerOrgMSP.member', 'RetailOrgMSP.member', 'DistributorOrgMSP.member', 'ShipOrgMSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 3,
+      "blockToLive":1000000,
+      "memberOnlyRead": true
+    }
+   ]
+   
