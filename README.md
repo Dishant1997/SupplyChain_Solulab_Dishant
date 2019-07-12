@@ -26,7 +26,7 @@ Other than that only the manufacturer is allowed to upload data for a product wh
     • Clone the github repository
         ◦ git clone https://github.com/Dishant1997/Task_Solulab_Dishant.git
 
-    • Create crypto config for our network
+    • Create crypto config for our network by going inside task-network folder
         ◦ ../bin/cryptogen generate –config=./crypto-config.yaml
 
     • Create channel artifacts for genesis block
