@@ -1,4 +1,4 @@
-**#Hyperledger Fabric Implementation of Private Data in Supply Chain Management :**
+**# Hyperledger Fabric Implementation of Private Data in Supply Chain Management :**
 
 This project showcases the implementation of private data in the scenario of supply chain management where distributor 1, shipper 1 and retail 1 cannot see the data of   distributor 2, shipper 2 and retail 2 and vice versa.
 Other than that only the manufacturer is allowed to upload data for a product while all the other participants have the read rights only, which is implemented using cid library(access control).
